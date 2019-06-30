@@ -1,0 +1,31 @@
+<a class="a-link-create" title="Back to view" role="button" (click)="navigateTo('/user/users')"><i class="fas fa-arrow-left"></i>
+  Cancel</a>
+<div class="container">
+  <div class="form-style-6">
+    <h1>Contact</h1>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <app-error-message [form]="form"></app-error-message>
+      <input type="hidden" formControlName="ContactId">
+      <input id="name" placeholder="Name" type="text" formControlName="Name">
+      <input id="name" placeholder="Email Address" type="text" formControlName="Email">
+      <input id="name" class="form-control" type="text" placeholder="Address" formControlName="Address">
+      <ng-container *ngIf="form.get('ContactId').value==0; then actionAdd; else actionModify">
+      </ng-container>
+    </form>
+  </div>
+</div>
+<ng-template #actionAdd>
+  <div>
+    <input type="submit" value="Add" class="form-style-6" [disabled]="!this.form.valid">
+    <input title="clear fields" type="button" value="Reset" class="form-style-6" (click)="resetForm()">
+
+  </div>
+</ng-template>
+
+<ng-template #actionModify>
+  <div class="form-row pull-right">
+    <input type="submit" class="form-style-6" value="Save" [disabled]="!this.form.valid">
+    <input title="cancel edit" type="button" value="Reset" class="form-style-6" (click)="resetForm()">
+    <input title="Delete Contact" type="button" value="Delete" class="form-style-6" (click)="deleteContact()">
+  </div>
+</ng-template>

@@ -1,0 +1,13 @@
+<div *ngIf="errors?.length > 0" class="validation-summary login-error">
+    <div class="flex-row">
+      <div class="error-icon">
+          <i class="fas fa-exclamation-triangle"></i>
+        </div>
+        <div class="flex validation-error">
+          <b>Please fix the following errors:</b>
+          <ul>
+            <li *ngFor="let error of errors"><i class="fas fa-times"></i> {{error}}</li>
+          </ul>
+        </div>
+    </div>
+    </div>

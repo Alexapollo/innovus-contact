@@ -1,0 +1,11 @@
+<div class="btn-toolbar" role="toolbar">
+    <div class="btn-group mr-2" role="group">
+        <button type="button" class="btn btn-secondary" [disabled]="currentPage==1" (click)="rollPage(-1)">&lt;</button>
+      </div>
+  <div class="btn-group mr-2" role="group" aria-label="First group">
+  <button type="button" class="btn btn-secondary" [disabled]="currentPage==i" *ngFor="let i of totalPages" (click)="getPage(i)">{{i}}</button>
+</div>
+<div class="btn-group mr-2" role="group">
+    <button type="button" class="btn btn-secondary" [disabled]="currentPage==totalPages.length" (click)="rollPage(1)">&gt;</button>
+  </div>
+</div>
