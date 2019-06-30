@@ -10,7 +10,10 @@ import { Subscription } from 'rxjs';
 export class PaginationComponent implements OnInit, OnDestroy {
 
   @Input() targetEndpoint: string;
-  totalPages: Array<number> = [];
+  @Input() pagesToDisplay: number;
+
+  private totalPages: Array<number> = [];
+  viewPages: Array<PaginationBag> = [];
   currentPage: number;
 
   private subscriptions: Array<Subscription> = [];
@@ -21,12 +24,12 @@ export class PaginationComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.paginationService.readTotalPages().
         subscribe(_ => {
-          this.toArray(_);
+          this.setPaginationArray(_);
         }));
   }
 
   ngOnInit() {
-    console.log(this.targetEndpoint)
+    console.log(this.pagesToDisplay)
     this.paginationService.getPage(1, this.targetEndpoint);
     this.currentPage = 1;
   }
@@ -36,6 +39,7 @@ export class PaginationComponent implements OnInit, OnDestroy {
   }
 
   getPage(page: number) {
+    if (page == 0) { return; }
     this.paginationService.getPage(page, this.targetEndpoint);
     this.currentPage = page;
   }
@@ -48,11 +52,53 @@ export class PaginationComponent implements OnInit, OnDestroy {
     this.getPage(this.currentPage);
   }
 
-  private toArray(pages: number) {
+  private setPaginationArray(pages: number) {
     this.totalPages = new Array<number>();
     for (let i = 1; i <= pages; i++) {
       this.totalPages.push(i);
     }
+    
+    let output = new Array<PaginationBag>();
+    let halfDisplay = Math.floor((this.pagesToDisplay - 1) / 2);
+    this.dotDown(output, halfDisplay);
+    output.push(new PaginationBag(this.currentPage.toString(), this.currentPage));
+    this.dotUp(output, halfDisplay);
+    this.viewPages = output;
   }
 
+  private dotDown(output: PaginationBag[], offset: number) {
+    let counter = offset;
+    for (var i = this.currentPage - 1; i >= 1; i--) {
+      if (counter > 0 || i == 1) {
+        output.push(new PaginationBag(i.toString(), i));
+      } else if (counter == 0) {
+        output.push(new PaginationBag('...', 0));
+      }
+      counter--;
+    }
+    return output.reverse();
+  }
+
+  private dotUp(output: PaginationBag[], offset: number) {
+    let counter = offset;
+    for (var i = this.currentPage + 1; i <= this.totalPages.length; i++) {
+      if (counter > 0 || i == this.totalPages.length) {
+        output.push(new PaginationBag(i.toString(), i));
+      } else if (counter == 0) {
+        output.push(new PaginationBag('...', 0));
+      }
+      counter--;
+    }
+    return output;
+  }
+
+}
+
+class PaginationBag {
+  label: string;
+  value: number;
+  constructor(label: string, value: number) {
+    this.label = label;
+    this.value = value;
+  }
 }
